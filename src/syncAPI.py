@@ -8,24 +8,35 @@ class SyncAPI(object):
     """
     API for SyncBox, and the _only_ way to execute commands and access the
     SyncBox internals.
+    
+    The instances has a shared state, because there is no need to have multiple
+    states.
      
     """
     
+    __state = {
+        '_watchList': {}
+    }
+    
     def __init__(self):
-        """Instantiate and set up the API object"""
-        pass
+        """
+        Instantiate and set up the API object. 
+        
+        Since the object should always share it's state, we set the __dict__
+        variable to the class variable __state.
+        
+        """
+        self.__dict__ = self.__state
 
-    def setWatchList(self, watchList):
-        """Setter for _watchList"""
-        self._watchList = watchList
-
+    @property
     def watchList(self):
-        """Getter for _watchList"""
-        try:
-            return self._watchList
-        except AttributeError:
-            self.setWatchList({})
-            return self._watchList
+        """Getter for the watchList attribute"""
+        return self._watchList
+    
+    @watchList.setter
+    def watchList(self, value):
+        """Getter for the watchList attribute"""
+        self._watchList = value
     
     def crawlDirectory(self, path):
         """
